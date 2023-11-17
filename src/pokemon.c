@@ -1,6 +1,6 @@
 #include "pokemon.h"
 #include "ataque.h"
-#include "cargar_pokemones.h"
+#include "pokemon_aux.h"
 
 struct pokemon {
 	struct ataque **ataques;

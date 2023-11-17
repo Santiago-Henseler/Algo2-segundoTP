@@ -11,7 +11,6 @@ struct adversario
 	lista_t *lista_poke;
 	hash_t* usados;
 	char * pokemones[3];
-	int puntaje;
 };
 
 adversario_t *adversario_crear(lista_t *pokemon)
@@ -44,6 +43,11 @@ bool adversario_seleccionar_pokemon(adversario_t *adversario, char **nombre1, ch
 	const char * poke2_nombre = pokemon_nombre(poke2);
 	const char * poke3_nombre = pokemon_nombre(poke3);
 
+	if(strcmp(poke1_nombre, poke2_nombre) == 0 || strcmp(poke1_nombre, poke3_nombre) == 0 || strcmp(poke2_nombre, poke3_nombre) == 0){
+		adversario_seleccionar_pokemon(adversario, nombre1, nombre2, nombre3);
+		return true;
+	}
+
 	*nombre1 = calloc(1, sizeof(char)*strlen(poke1_nombre)+1);
 	*nombre2 = calloc(1, sizeof(char)*strlen(poke2_nombre)+1);
 	*nombre3 = calloc(1, sizeof(char)*strlen(poke3_nombre)+1);
@@ -54,7 +58,7 @@ bool adversario_seleccionar_pokemon(adversario_t *adversario, char **nombre1, ch
 	strcpy(*nombre1, poke1_nombre);
 	strcpy(*nombre2, poke2_nombre);
 	strcpy(*nombre3, poke3_nombre);
-
+	
 	return true;
 }
 
@@ -74,17 +78,30 @@ bool adversario_pokemon_seleccionado(adversario_t *adversario, char *nombre1, ch
 	return true;
 }
 
+/*
+void buscar_ataques(pokemon_t * poke, char *ataques){
+
+
+	pokemon_buscar_ataque()
+}
+*/
 jugada_t adversario_proxima_jugada(adversario_t *adversario)
 {
+	/*
 	srand((unsigned)time(NULL));
-	jugada_t j;
 
+	int posicion = rand() % 3;
+
+	char * poke = adversario->pokemones[posicion];
+*/
+	jugada_t j = {.pokemon = "", .ataque = ""};
 	
 	return j;
 }
 
 void adversario_informar_jugada(adversario_t *a, jugada_t j)
 {
+	adversario_proxima_jugada(a);
 }
 
 void adversario_destruir(adversario_t *adversario)

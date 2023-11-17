@@ -1,4 +1,4 @@
-#include "cargar_pokemones.h"
+#include "pokemon_aux.h"
 
 enum TIPO definir_tipo(char texto)
 {
