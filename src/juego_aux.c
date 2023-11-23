@@ -14,7 +14,9 @@ void buscar_ataques(const struct ataque * _ataque, void *_almacenador){
  	struct almacenador *almacenador = _almacenador;
 	char * nombre = (char *)_ataque->nombre;
 	
-	almacenador->elemento[almacenador->cantidad] = nombre;
+	almacenador->elemento[almacenador->cantidad] = calloc(1, sizeof(char)*strlen(nombre)+1);
+
+	strcpy(almacenador->elemento[almacenador->cantidad], nombre);
 	almacenador->cantidad++;
 }
 
@@ -73,4 +75,3 @@ int puntear_ataque(RESULTADO_ATAQUE resultado, const struct ataque *ataque){
 		
 	return 0;
 }
-

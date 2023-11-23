@@ -40,9 +40,15 @@ juego_t *juego_crear()
 	nuevo_juego->j1->usados = hash_crear(9);
 	nuevo_juego->j2->usados = hash_crear(9);
 	
-	if(!nuevo_juego || !nuevo_juego->j1 || !nuevo_juego->j2 || !nuevo_juego->j1->usados || !nuevo_juego->j2->usados)
+	if(!nuevo_juego || !nuevo_juego->j1 || !nuevo_juego->j2 || !nuevo_juego->j1->usados || !nuevo_juego->j2->usados){
+		free(nuevo_juego);
+		free(nuevo_juego->j1);
+		free(nuevo_juego->j2);
+		hash_destruir(nuevo_juego->j1->usados);
+		hash_destruir(nuevo_juego->j2->usados);
 		return NULL;
-
+	}
+		
 	return nuevo_juego;
 }
 
@@ -174,17 +180,17 @@ void juego_destruir(juego_t *juego)
 	free(juego->j1->pokemones[1]);
 	free(juego->j1->pokemones[2]);
 
-	hash_destruir_todo(juego->j1->usados, free);
+	hash_destruir(juego->j1->usados);
 	free(juego->j1);
 	
 	free(juego->j2->pokemones[0]);
 	free(juego->j2->pokemones[1]);
 	free(juego->j2->pokemones[2]);
 
-	hash_destruir_todo(juego->j2->usados, free);
+	hash_destruir(juego->j2->usados);
 	free(juego->j2);
 
-	lista_destruir_todo(juego->lista_poke, free);
+	lista_destruir(juego->lista_poke);
 
 	pokemon_destruir_todo(juego->ip);
 

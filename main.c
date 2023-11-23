@@ -51,10 +51,9 @@ int main(int argc, char *argv[])
 		comander(comando, juego, adversario, menu);
 	}
 
-
 	system("clear");
-	printf("EL ganador fue");
-
+	mostrar_puntaje(juego);
+	destruir_menu(menu);
 	juego_destruir(juego);
 	adversario_destruir(adversario);
 

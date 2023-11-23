@@ -1,12 +1,9 @@
 #ifndef MENU_H_
 #define MENU_H_
 
-
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
-
-
 #include "src/pokemon.h"
 #include "src/ataque.h"
 #include "src/juego.h"
@@ -30,5 +27,9 @@ menu_t * menu_crear(lista_t * lista);
 void comander(char comando, juego_t * juego, adversario_t *adversario, struct menu *menu);
 
 void mostrar_comandos();
+
+void destruir_menu(lista_t *lista);
+
+void mostrar_puntaje(juego_t * juego);
 
 #endif

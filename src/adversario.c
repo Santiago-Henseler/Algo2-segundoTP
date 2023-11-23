@@ -21,9 +21,12 @@ adversario_t *adversario_crear(lista_t *pokemon)
 	struct adversario *nuevo = calloc(1, sizeof(struct adversario));
 	nuevo->usados = hash_crear(9);
 
-	if(!nuevo || !pokemon)
+	if(!nuevo || !pokemon || !nuevo->usados){
+		free(nuevo);
+		hash_destruir(nuevo->usados);
 		return NULL;
-
+	}
+		
 	nuevo->lista_poke = pokemon;
 
 	return nuevo;
@@ -84,9 +87,13 @@ bool adversario_pokemon_seleccionado(adversario_t *adversario, char *nombre1, ch
 jugada_t adversario_proxima_jugada(adversario_t *adversario)
 {
 	time_t t;
-	jugada_t j;
+	jugada_t j = {.ataque="", .pokemon=""};
 	struct almacenador almacenador;
 	almacenador.cantidad = 0;
+	almacenador.elemento = malloc(3*sizeof(char*));
+
+	if(!almacenador.elemento)
+		return j;
 
 	srand((unsigned)time(&t));
 
@@ -102,19 +109,28 @@ jugada_t adversario_proxima_jugada(adversario_t *adversario)
 	char * clave = crear_clave(j);
 
 	if(hash_contiene(adversario->usados, clave)){
+		free(clave);
+		free(almacenador.elemento[0]);
+		free(almacenador.elemento[1]);
+		free(almacenador.elemento[2]);
+		free(almacenador.elemento);
 		return adversario_proxima_jugada(adversario);
 	}
 
 	hash_insertar(adversario->usados, clave, (void*)clave,NULL);
 
 	free(clave);
+	free(almacenador.elemento[0]);
+	free(almacenador.elemento[1]);
+	free(almacenador.elemento[2]);
+	free(almacenador.elemento);
 
 	return j;
 }
 
 void adversario_informar_jugada(adversario_t *a, jugada_t j)
 {
-	adversario_proxima_jugada(a);
+	
 }
 
 void adversario_destruir(adversario_t *adversario)

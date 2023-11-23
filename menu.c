@@ -12,11 +12,21 @@ void mostrar_ataques(char *nombre,  lista_t* lista){
 	struct almacenador almacenador;
 	almacenador.cantidad = 0;
 
+	almacenador.elemento = malloc(3*sizeof(char*));
+
+	if(!almacenador.elemento)
+		return;
+
 	pokemon_t *poke = lista_buscar_elemento(lista, comparador, nombre);
 
 	con_cada_ataque(poke, buscar_ataques, (void *)&almacenador);
 
-	printf("║  Ataques:   %s   -     %s     -    %s  ║\n", (char*)almacenador.elemento[0], (char*)almacenador.elemento[1], (char*)almacenador.elemento[2]);
+	printf("║  Ataques:   %s   -  %s   -  %s  ║\n", (char*)almacenador.elemento[0], (char*)almacenador.elemento[1], (char*)almacenador.elemento[2]);
+
+	free(almacenador.elemento[0]);
+	free(almacenador.elemento[1]);
+	free(almacenador.elemento[2]);
+	free(almacenador.elemento);
 }
 
 bool mostrar_pokes(void * _poke, void * aux){
@@ -84,27 +94,21 @@ void mostrar_seleccionados(struct menu *menu){
 	printf("║             TUS POKEMONES               ║\n");
 	printf("║                                         ║\n");
 	printf("║                %s                       ║\n", menu->pokemones[0]);
-
-	//mostrar_ataques(menu->pokemones[0], menu->lista);
+	printf("║                                         ║\n");
+	mostrar_ataques(menu->pokemones[0], menu->lista);
 
 	printf("║                                         ║\n"
 		   "║                %s                       ║\n", menu->pokemones[1]);
-
-	//mostrar_ataques(menu->pokemones[1], menu->lista);
+	printf("║                                         ║\n");
+	mostrar_ataques(menu->pokemones[1], menu->lista);
 
 	printf("║                                         ║\n"
 	       "║                %s                       ║\n", menu->pokemones[2]);
-		   
-	//mostrar_ataques(menu->pokemones[2], menu->lista);   
+	printf("║                                         ║\n");  
+	mostrar_ataques(menu->pokemones[2], menu->lista);   
 		   
 	printf("║                                         ║\n"
 		   "╚═══════════════════◓═════════════════════╝\n\n");
-
-}
-
-void mostrar_resultado(resultado_jugada_t resultado){
-
-	
 
 }
 
@@ -121,7 +125,7 @@ void ataque(juego_t * juego, adversario_t *adversario, struct menu *menu){
 	while (!elejido)
 	{
 		printf("\nEl pokemon seleccionado debe existir\n");
-		//mostrar_seleccionados(menu);
+		mostrar_seleccionados(menu);
 		printf("Seleccionar pokemon: ");
 		scanf("%s", pokemon);
 		
@@ -261,4 +265,12 @@ menu_t * menu_crear(lista_t * lista){
     nuevo_menu->lista = lista;
 
     return nuevo_menu;
+}
+
+void destruir_menu(menu_t *menu){
+	lista_destruir(menu->lista);
+	free(menu->pokemones[0]);
+	free(menu->pokemones[1]);
+	free(menu->pokemones[2]);
+	free(menu);
 }
