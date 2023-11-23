@@ -1,12 +1,5 @@
 #include "juego.h"
-#include "tipo.h"
-#include "ataque.h"
-#include "pokemon.h"
-#include "hash.h"
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+#include "juego_aux.h"
 
 struct juego{
 	informacion_pokemon_t *ip;
@@ -22,14 +15,6 @@ struct jugador
 	int puntaje;
 	hash_t* usados;
 };
-
-/*    aux */
-void agregar_pokemon_a_lista(pokemon_t * _pokemon, void * _lista){
-	lista_t *lista = _lista;
-
-	 lista_insertar(lista, _pokemon);
-	return;
-}
 
 JUEGO_ESTADO agregar_pokemon_a_jugador(struct jugador * primero, struct jugador * segundo, const char *nombre1, const char *nombre2, const char *nombre3){
 
@@ -47,57 +32,6 @@ JUEGO_ESTADO agregar_pokemon_a_jugador(struct jugador * primero, struct jugador 
 	return TODO_OK;
 }
 
-RESULTADO_ATAQUE clasificar_ataque(enum TIPO ataque1, enum TIPO ataque2){	
-	if(ataque1 == FUEGO && ataque2 == PLANTA)
-		return ATAQUE_EFECTIVO;
-	if(ataque1 == FUEGO && ataque2 == AGUA)
-		return ATAQUE_INEFECTIVO;
-	if(ataque1 == PLANTA && ataque2 == ROCA)
-		return ATAQUE_EFECTIVO;
-	if(ataque1 == PLANTA && ataque2 == FUEGO)
-		return ATAQUE_INEFECTIVO;
-	if(ataque1 == ROCA && ataque2 == ELECTRICO)
-		return ATAQUE_EFECTIVO;
-	if(ataque1 == ROCA && ataque2 == PLANTA)
-		return ATAQUE_INEFECTIVO;
-	if(ataque1 == ELECTRICO && ataque2 == AGUA)
-		return ATAQUE_EFECTIVO;
-	if(ataque1 == ELECTRICO && ataque2 == ROCA)
-		return ATAQUE_INEFECTIVO;
-	if(ataque1 == AGUA && ataque2 == FUEGO)
-		return ATAQUE_EFECTIVO;
-	if(ataque1 == AGUA && ataque2 == ELECTRICO)
-		return ATAQUE_INEFECTIVO;
-
-	return ATAQUE_REGULAR;
-}
-
-int puntear_ataque(RESULTADO_ATAQUE resultado, const struct ataque *ataque){
-	
-	if(resultado == ATAQUE_REGULAR)
-		return (int)ataque->poder;
-	
-	if(resultado == ATAQUE_EFECTIVO)
-		return (int)ataque->poder * 3;
-
-	if(resultado == ATAQUE_INEFECTIVO)
-		return (int)ceil((float)ataque->poder / 2);
-		
-	return 0;
-}
-
-char * crear_clave(jugada_t jugada){
-
-	char * clave = calloc(1, sizeof(char)*(strlen(jugada.pokemon) + strlen(jugada.ataque) +1 ) );
-
-	strcpy(clave, jugada.pokemon);
-	strcat(clave, jugada.ataque);
-
-	return clave;
-}
-
-/*    aux */
-
 juego_t *juego_crear()
 {
 	struct juego * nuevo_juego = calloc(1, sizeof(struct juego)); 
@@ -108,8 +42,6 @@ juego_t *juego_crear()
 	
 	if(!nuevo_juego || !nuevo_juego->j1 || !nuevo_juego->j2 || !nuevo_juego->j1->usados || !nuevo_juego->j2->usados)
 		return NULL;
-
-	
 
 	return nuevo_juego;
 }
@@ -242,17 +174,17 @@ void juego_destruir(juego_t *juego)
 	free(juego->j1->pokemones[1]);
 	free(juego->j1->pokemones[2]);
 
-	hash_destruir(juego->j1->usados);
+	hash_destruir_todo(juego->j1->usados, free);
 	free(juego->j1);
 	
 	free(juego->j2->pokemones[0]);
 	free(juego->j2->pokemones[1]);
 	free(juego->j2->pokemones[2]);
 
-	hash_destruir(juego->j2->usados);
+	hash_destruir_todo(juego->j2->usados, free);
 	free(juego->j2);
 
-	lista_destruir(juego->lista_poke);
+	lista_destruir_todo(juego->lista_poke, free);
 
 	pokemon_destruir_todo(juego->ip);
 

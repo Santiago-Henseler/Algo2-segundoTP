@@ -13,8 +13,8 @@ pruebas_chanutron: src/*.c pruebas_chanutron.c
 valgrind-main: main
 	valgrind $(VALGRIND_FLAGS) ./main
 
-main: src/*.c main.c
-	$(CC) $(CFLAGS) src/*.c main.c -lm -o main
+main: src/*.c main.c menu.c
+	$(CC) $(CFLAGS) src/*.c main.c menu.c -lm -o main
 
 clean:
 	rm -f pruebas_alumno pruebas_chanutron ejemplo
