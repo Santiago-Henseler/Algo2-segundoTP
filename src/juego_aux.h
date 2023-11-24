@@ -5,20 +5,26 @@
 #include "tipo.h"
 #include "ataque.h"
 #include "pokemon.h"
-#include "hash.h"
+#include "abb.h"
+#include "jugador.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
-struct almacenador{
+typedef struct almacenador{
 	void **elemento;
 	int cantidad;
-};
+}almacenador_t;
 
-int comparador(void *_actual, void * _contexto);
+int comparador_poke(void *_actual, void * _contexto);
+
+int comparador_abb(void *_a, void * _b);
 
 void buscar_ataques(const struct ataque * _ataque, void *_almacenador);
+
+almacenador_t * almacenar_ataques(char * nombre, lista_t *lista);
 
 void agregar_pokemon_a_lista(pokemon_t * _pokemon, void * _lista);
 

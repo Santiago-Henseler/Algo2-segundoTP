@@ -4,7 +4,8 @@
 #include "juego_aux.h"
 #include "ataque.h"
 #include "adversario.h"
-#include "hash.h"
+#include "jugador.h"
+#include "abb.h"
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -12,18 +13,17 @@
 struct adversario
 {
 	lista_t *lista_poke;
-	hash_t* usados;
-	char * pokemones[3];
+	jugador_t *jugador;
 };
 
 adversario_t *adversario_crear(lista_t *pokemon)
 {
 	struct adversario *nuevo = calloc(1, sizeof(struct adversario));
-	nuevo->usados = hash_crear(15);
 
-	if(!nuevo || !pokemon || !nuevo->usados){
+	nuevo->jugador = jugador_crear();
+
+	if(!nuevo || !pokemon || !nuevo->jugador){
 		free(nuevo);
-		hash_destruir(nuevo->usados);
 		return NULL;
 	}
 		
@@ -70,63 +70,32 @@ bool adversario_seleccionar_pokemon(adversario_t *adversario, char **nombre1, ch
 
 bool adversario_pokemon_seleccionado(adversario_t *adversario, char *nombre1, char *nombre2, char *nombre3)
 {
-	adversario->pokemones[0] = calloc(1, sizeof(char)*strlen(nombre1)+1);
-	adversario->pokemones[1] = calloc(1, sizeof(char)*strlen(nombre2)+1);
-	adversario->pokemones[2] = calloc(1, sizeof(char)*strlen(nombre3)+1);
-
-	if(!adversario->pokemones[0] || !adversario->pokemones[1] || !adversario->pokemones[2])
+	if(!jugador_cargar_pokes(adversario->jugador, nombre1,adversario->lista_poke)|| !jugador_cargar_pokes(adversario->jugador, nombre2 ,adversario->lista_poke) || !jugador_cargar_pokes(adversario->jugador, nombre3 ,adversario->lista_poke))
 		return false;
-
-	strcpy(adversario->pokemones[0], nombre1);
-	strcpy(adversario->pokemones[1], nombre2);
-	strcpy(adversario->pokemones[2], nombre3);
-	
 	return true;
 }
 
 jugada_t adversario_proxima_jugada(adversario_t *adversario)
 {
 	time_t t;
-	jugada_t j;
-	struct almacenador almacenador;
-	almacenador.cantidad = 0;
-	almacenador.elemento = malloc(3*sizeof(char));
+	jugada_t j;	
+	srand((unsigned)time(&t+2));
 
-	if(!almacenador.elemento){
-		strcpy(j.ataque, "");
-		strcpy(j.pokemon,"");
-		return j;
-	}
-		
-	srand((unsigned)time(&t));
+	int cantidad = (int)abb_tamanio(adversario->jugador->movimientos_posibles)-1;
 
-	char * nombre = adversario->pokemones[rand() % 3];
+	char *claves[cantidad];
 
-	pokemon_t *poke = lista_buscar_elemento(adversario->lista_poke, comparador, nombre);
+	abb_recorrer(adversario->jugador->movimientos_posibles, INORDEN, (void **)claves, (size_t)cantidad);
 
-	con_cada_ataque(poke, buscar_ataques, (void *)&almacenador);
+	char * clave = claves[rand() % cantidad];
+
+	char * nombre = strtok(clave, ",");
+	char * ataque = strtok(NULL, ",");
 
 	strcpy(j.pokemon , nombre);
-	strcpy(j.ataque, (char *)almacenador.elemento[rand() % almacenador.cantidad]);
+	strcpy(j.ataque, ataque);
 
-	char * clave = crear_clave(j);
-
-	if(hash_contiene(adversario->usados, clave)){
-		free(clave);
-		free(almacenador.elemento[0]);
-		free(almacenador.elemento[1]);
-		free(almacenador.elemento[2]);
-		free(almacenador.elemento);
-		return adversario_proxima_jugada(adversario);
-	}
-
-	hash_insertar(adversario->usados, clave, (void*)clave,NULL);
-
-	free(clave);
-	free(almacenador.elemento[0]);
-	free(almacenador.elemento[1]);
-	free(almacenador.elemento[2]);
-	free(almacenador.elemento);
+	abb_quitar(adversario->jugador->movimientos_posibles, (void*)clave);
 
 	return j;
 }
@@ -138,12 +107,12 @@ void adversario_informar_jugada(adversario_t *a, jugada_t j)
 
 void adversario_destruir(adversario_t *adversario)
 {
-	hash_destruir_todo(adversario->usados, free);
+	abb_destruir(adversario->jugador->movimientos_posibles);
 	lista_destruir_todo(adversario->lista_poke, free);
 
-	free(adversario->pokemones[0]);
-	free(adversario->pokemones[1]);
-	free(adversario->pokemones[2]);
+	free(adversario->jugador->pokemones[0]);
+	free(adversario->jugador->pokemones[1]);
+	free(adversario->jugador->pokemones[2]);
 
 	free(adversario);
 }

@@ -9,24 +9,17 @@ struct menu
 
 void mostrar_ataques(char *nombre,  lista_t* lista){
 
-	struct almacenador almacenador;
-	almacenador.cantidad = 0;
+	almacenador_t * ataques = almacenar_ataques(nombre, lista);
 
-	almacenador.elemento = malloc(3*sizeof(char*));
-
-	if(!almacenador.elemento)
+	if(!ataques)
 		return;
 
-	pokemon_t *poke = lista_buscar_elemento(lista, comparador, nombre);
+	printf("║  Ataques:   %s   -  %s   -  %s  ║\n", (char*)ataques->elemento[0], (char*)ataques->elemento[1], (char*)ataques->elemento[2]);
 
-	con_cada_ataque(poke, buscar_ataques, (void *)&almacenador);
-
-	printf("║  Ataques:   %s   -  %s   -  %s  ║\n", (char*)almacenador.elemento[0], (char*)almacenador.elemento[1], (char*)almacenador.elemento[2]);
-
-	free(almacenador.elemento[0]);
-	free(almacenador.elemento[1]);
-	free(almacenador.elemento[2]);
-	free(almacenador.elemento);
+	free(ataques->elemento[0]);
+	free(ataques->elemento[1]);
+	free(ataques->elemento[2]);
+	free(ataques->elemento);
 }
 
 bool mostrar_pokes(void * _poke, void * aux){
@@ -167,15 +160,11 @@ void ataque(juego_t * juego, adversario_t *adversario, struct menu *menu){
 
 		strcpy(jugada_local.pokemon, poke);
 		strcpy(jugada_local.ataque, ataque);
-		
-		resultado = juego_jugar_turno(juego, jugada_local, jugada_adversario);
 
-		if(resultado.jugador1 == ATAQUE_ERROR || resultado.jugador2 == ATAQUE_ERROR){
-			printf("\nEl pokemon seleccionado debe existir y los ataques no se pueden repetir\n");
-		}
-		else {
+		resultado = juego_jugar_turno(juego, jugada_local, jugada_adversario);
+		
+		if(resultado.jugador1 != ATAQUE_ERROR && resultado.jugador2 != ATAQUE_ERROR)
 			elejido = true;
-		}
 	}
 
 	mostrar_jugada(jugada_adversario, jugada_local, resultado);

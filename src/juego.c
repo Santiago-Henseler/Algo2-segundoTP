@@ -5,47 +5,19 @@ struct juego{
 	informacion_pokemon_t *ip;
 	lista_t *lista_poke;
 	int rondas;
-	struct jugador *j1;
-	struct jugador *j2;
+	jugador_t *j1;
+	jugador_t *j2;
 };
-
-struct jugador
-{
-	char * pokemones[3];
-	int puntaje;
-	hash_t* usados;
-};
-
-JUEGO_ESTADO agregar_pokemon_a_jugador(struct jugador * primero, struct jugador * segundo, const char *nombre1, const char *nombre2, const char *nombre3){
-
-	primero->pokemones[0] = calloc(1, sizeof(char)*strlen(nombre1)+1);
-	primero->pokemones[1] = calloc(1, sizeof(char)*strlen(nombre2)+1);
-	segundo->pokemones[2] = calloc(1, sizeof(char)*strlen(nombre3)+1);
-
-	if(!primero->pokemones[0] || !primero->pokemones[1] || !segundo->pokemones[2])
-		return ERROR_GENERAL;	
-
-	strcpy(primero->pokemones[0], nombre1);
-	strcpy(primero->pokemones[1], nombre2);
-	strcpy(segundo->pokemones[2], nombre3);
-
-	return TODO_OK;
-}
 
 juego_t *juego_crear()
 {
 	struct juego * nuevo_juego = calloc(1, sizeof(struct juego)); 
-	nuevo_juego->j1 = calloc(1, sizeof(struct jugador));
-	nuevo_juego->j2 = calloc(1, sizeof(struct jugador));
-	nuevo_juego->j1->usados = hash_crear(15);
-	nuevo_juego->j2->usados = hash_crear(15);
-	
-	if(!nuevo_juego || !nuevo_juego->j1 || !nuevo_juego->j2 || !nuevo_juego->j1->usados || !nuevo_juego->j2->usados){
+	nuevo_juego->j1 = jugador_crear();
+	nuevo_juego->j2 = jugador_crear();
+
+	if(!nuevo_juego || !nuevo_juego->j1 || !nuevo_juego->j2){
 		free(nuevo_juego);
-		free(nuevo_juego->j1);
-		free(nuevo_juego->j2);
-		hash_destruir(nuevo_juego->j1->usados);
-		hash_destruir(nuevo_juego->j2->usados);
+
 		return NULL;
 	}
 		
@@ -99,10 +71,15 @@ JUEGO_ESTADO juego_seleccionar_pokemon(juego_t *juego, JUGADOR jugador, const ch
 	if(!pokemon_buscar(juego->ip, nombre1) || !pokemon_buscar(juego->ip, nombre2) || !pokemon_buscar(juego->ip, nombre3))
 		return POKEMON_INEXISTENTE;
 
-	if(jugador == JUGADOR1)
-		return agregar_pokemon_a_jugador(juego->j1, juego->j2, nombre1, nombre2, nombre3);
-	
-	return agregar_pokemon_a_jugador(juego->j2, juego->j1, nombre1, nombre2, nombre3);
+	if(jugador == JUGADOR1){
+		if(!jugador_cargar_pokes(juego->j1, (char *)nombre1,juego->lista_poke)|| !jugador_cargar_pokes(juego->j1, (char *)nombre2 ,juego->lista_poke) || !jugador_cargar_pokes(juego->j2, (char *)nombre3 ,juego->lista_poke))
+			return ERROR_GENERAL;
+		return TODO_OK;
+	}	
+		
+	if(!jugador_cargar_pokes(juego->j2,(char *)nombre1,juego->lista_poke)|| !jugador_cargar_pokes(juego->j2, (char *)nombre2 ,juego->lista_poke) || !jugador_cargar_pokes(juego->j1, (char *)nombre3 ,juego->lista_poke))
+		return ERROR_GENERAL;
+	return TODO_OK;
 }
 
 resultado_jugada_t juego_jugar_turno(juego_t *juego, jugada_t jugada_jugador1, jugada_t jugada_jugador2)
@@ -115,27 +92,21 @@ resultado_jugada_t juego_jugar_turno(juego_t *juego, jugada_t jugada_jugador1, j
 	if(!juego)
 		return resultado;
 
-	pokemon_t *poke1 = pokemon_buscar(juego->ip, jugada_jugador1.pokemon);
-	pokemon_t *poke2 = pokemon_buscar(juego->ip, jugada_jugador2.pokemon);
-
-	if(!poke1 || !poke2)
-		return resultado;
-
-	const struct ataque * poke1_ataque = pokemon_buscar_ataque(poke1, jugada_jugador1.ataque);
-	const struct ataque * poke2_ataque = pokemon_buscar_ataque(poke2, jugada_jugador2.ataque);
-
-	if(!poke1_ataque || !poke2_ataque)
-		return resultado;
-
 	char * clave1 = crear_clave(jugada_jugador1);
 	char * clave2 = crear_clave(jugada_jugador2);
 
-	if(hash_contiene(juego->j1->usados, clave1) || hash_contiene(juego->j2->usados, clave2)){
+	if(!abb_buscar(juego->j1->movimientos_posibles, (void*)clave1) || !abb_buscar(juego->j2->movimientos_posibles, (void*)clave2)){
 		free(clave1);
 		free(clave2);
 		return resultado;
 	}
-		
+
+	pokemon_t *poke1 = pokemon_buscar(juego->ip, jugada_jugador1.pokemon);
+	pokemon_t *poke2 = pokemon_buscar(juego->ip, jugada_jugador2.pokemon);
+
+	const struct ataque * poke1_ataque = pokemon_buscar_ataque(poke1, jugada_jugador1.ataque);
+	const struct ataque * poke2_ataque = pokemon_buscar_ataque(poke2, jugada_jugador2.ataque);
+
 	resultado.jugador1 = clasificar_ataque(poke1_ataque->tipo, poke2_ataque->tipo);
 	resultado.jugador2 = clasificar_ataque(poke2_ataque->tipo, poke1_ataque->tipo);
 
@@ -144,8 +115,8 @@ resultado_jugada_t juego_jugar_turno(juego_t *juego, jugada_t jugada_jugador1, j
 
 	juego->rondas++;
 
-	hash_insertar(juego->j1->usados, clave1, (void*)clave1, NULL);
-	hash_insertar(juego->j2->usados, clave2, (void*)clave2, NULL);
+	abb_quitar(juego->j1->movimientos_posibles,(void*)clave1);
+	abb_quitar(juego->j2->movimientos_posibles,(void*)clave2);
 
 	free(clave1);
 	free(clave2);
@@ -175,19 +146,11 @@ void juego_destruir(juego_t *juego)
 {
 	if(!juego)
 		return;
-
-	free(juego->j1->pokemones[0]);
-	free(juego->j1->pokemones[1]);
-	free(juego->j1->pokemones[2]);
-
-	hash_destruir(juego->j1->usados);
+		
+	abb_destruir(juego->j1->movimientos_posibles);
 	free(juego->j1);
-	
-	free(juego->j2->pokemones[0]);
-	free(juego->j2->pokemones[1]);
-	free(juego->j2->pokemones[2]);
 
-	hash_destruir(juego->j2->usados);
+	abb_destruir(juego->j2->movimientos_posibles);
 	free(juego->j2);
 
 	lista_destruir(juego->lista_poke);

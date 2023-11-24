@@ -1,12 +1,19 @@
 #include "juego_aux.h"
 
-int comparador(void *_actual, void * _contexto){
+int comparador_poke(void *_actual, void * _contexto){
 	
 	pokemon_t * actual = _actual;
 	const char *actual_nombre = pokemon_nombre(actual);
 	char *contexto = _contexto;
 
 	return strcmp(actual_nombre, contexto);
+}
+
+int comparador_abb(void *_a, void * _b){
+	char * a = _a;
+	char * b = _b;
+
+	return strcmp(a,b);
 }
 
 void buscar_ataques(const struct ataque * _ataque, void *_almacenador){
@@ -18,6 +25,20 @@ void buscar_ataques(const struct ataque * _ataque, void *_almacenador){
 
 	strcpy(almacenador->elemento[almacenador->cantidad], nombre);
 	almacenador->cantidad++;
+}
+
+almacenador_t * almacenar_ataques(char * nombre, lista_t *lista){
+	almacenador_t *almacenador = calloc(1, sizeof(almacenador_t));
+	almacenador->elemento = calloc(3,sizeof(char));
+
+	if(!almacenador || !almacenador->elemento)
+		return NULL;
+
+	pokemon_t *poke = lista_buscar_elemento(lista, comparador_poke, nombre);
+
+	con_cada_ataque(poke, buscar_ataques, (void *)almacenador);
+
+	return almacenador;
 }
 
 void agregar_pokemon_a_lista(pokemon_t * _pokemon, void * _lista){
@@ -32,6 +53,7 @@ char * crear_clave(jugada_t jugada){
 	char * clave = calloc(1, sizeof(char)*(strlen(jugada.pokemon) + strlen(jugada.ataque) +1 ) );
 
 	strcpy(clave, jugada.pokemon);
+	strcat(clave, ",");
 	strcat(clave, jugada.ataque);
 
 	return clave;
