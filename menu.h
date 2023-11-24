@@ -28,7 +28,7 @@ void comander(char comando, juego_t * juego, adversario_t *adversario, struct me
 
 void mostrar_comandos();
 
-void destruir_menu(lista_t *lista);
+void destruir_menu(menu_t *menu);
 
 void mostrar_puntaje(juego_t * juego);
 

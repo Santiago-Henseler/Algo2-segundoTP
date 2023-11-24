@@ -19,7 +19,7 @@ struct adversario
 adversario_t *adversario_crear(lista_t *pokemon)
 {
 	struct adversario *nuevo = calloc(1, sizeof(struct adversario));
-	nuevo->usados = hash_crear(9);
+	nuevo->usados = hash_crear(15);
 
 	if(!nuevo || !pokemon || !nuevo->usados){
 		free(nuevo);
@@ -87,14 +87,17 @@ bool adversario_pokemon_seleccionado(adversario_t *adversario, char *nombre1, ch
 jugada_t adversario_proxima_jugada(adversario_t *adversario)
 {
 	time_t t;
-	jugada_t j = {.ataque="", .pokemon=""};
+	jugada_t j;
 	struct almacenador almacenador;
 	almacenador.cantidad = 0;
-	almacenador.elemento = malloc(3*sizeof(char*));
+	almacenador.elemento = malloc(3*sizeof(char));
 
-	if(!almacenador.elemento)
+	if(!almacenador.elemento){
+		strcpy(j.ataque, "");
+		strcpy(j.pokemon,"");
 		return j;
-
+	}
+		
 	srand((unsigned)time(&t));
 
 	char * nombre = adversario->pokemones[rand() % 3];

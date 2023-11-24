@@ -18,14 +18,14 @@ bool cargar_archivo(juego_t *juego, char *PATH){
 int main(int argc, char *argv[])
 {
 	
-	if(argc != 2){
-		printf("Error, no se especifico el archivo! Por favor ingrese: ./main 'nombre_archivo'\n");
-		return -1;
-	}
+	//if(argc != 2){
+	//	printf("Error, no se especifico el archivo! Por favor ingrese: ./main 'nombre_archivo'\n");
+//		return -1;
+//	}
 
 	juego_t *juego = juego_crear();
 
-	if(!cargar_archivo(juego, argv[1]))
+	if(!cargar_archivo(juego, "ejemplos/correcto.txt"))
 		return -1;
 
 	lista_t * lista = juego_listar_pokemon(juego);

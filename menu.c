@@ -112,44 +112,73 @@ void mostrar_seleccionados(struct menu *menu){
 
 }
 
+char * rta(RESULTADO_ATAQUE resultado){
+	if(resultado == ATAQUE_EFECTIVO)
+		return "efectivo";
+	if(resultado == ATAQUE_INEFECTIVO)
+		return "inefectivo";
+	if(resultado == ATAQUE_REGULAR)
+		return "regular";
+	return "";
+}
+
+void mostrar_jugada(jugada_t adversario, jugada_t jugador, resultado_jugada_t resultado){
+	system("clear");
+
+	printf("╔═══════════════════◓═════════════════════╗\n");
+	printf("║           RESULTADO ATAQUE              ║\n");
+	printf("║                                         ║\n");
+	printf("║  El rival uso:  %s con %s               ║\n", adversario.pokemon, adversario.ataque);
+	printf("║                                         ║\n");
+	printf("║    	 Y resulto  %s                    ║\n", rta(resultado.jugador2));
+	printf("║                                         ║\n");
+	printf("║   Usaste:  %s con %s                    ║\n", jugador.pokemon, jugador.ataque);
+	printf("║                                         ║\n");
+	printf("║    	     Y resulto  %s                ║\n", rta(resultado.jugador1));
+	printf("║                                         ║\n");
+	printf("║                                         ║\n"
+		   "╚═══════════════════◓═════════════════════╝\n\n");
+
+}
+
 void ataque(juego_t * juego, adversario_t *adversario, struct menu *menu){
 	jugada_t jugada_adversario = adversario_proxima_jugada(adversario);
 
 	bool elejido = false;
 
-	char pokemon[20];
-	char ataque[20];
+	char *poke, *ataque;
 	resultado_jugada_t resultado;
 	jugada_t jugada_local;
 
 	while (!elejido)
 	{
-		printf("\nEl pokemon seleccionado debe existir\n");
 		mostrar_seleccionados(menu);
+		printf("Indicando el pokemon y el ataque de esta manera: 'nombre,ataque'\n\n");
+
 		printf("Seleccionar pokemon: ");
-		scanf("%s", pokemon);
+
+		char linea[200];
+		scanf("%s", linea);
+		poke = strtok(linea, ",");
+		ataque = strtok(NULL, ",");
 		
-		if(strcmp(pokemon, menu->pokemones[0]) != 0 && strcmp(pokemon, menu->pokemones[1]) != 0 && strcmp(pokemon, menu->pokemones[2]) != 0 )
-				continue;
+		if(strcmp(poke, menu->pokemones[0]) != 0 && strcmp(poke, menu->pokemones[1]) != 0 && strcmp(poke, menu->pokemones[2]) != 0 )
+			continue;		
 
-		strcpy(jugada_local.pokemon, pokemon);
-
-		printf("Seleccionar ataque: ");
-		scanf("%s", ataque);
-
+		strcpy(jugada_local.pokemon, poke);
 		strcpy(jugada_local.ataque, ataque);
 		
 		resultado = juego_jugar_turno(juego, jugada_local, jugada_adversario);
 
 		if(resultado.jugador1 == ATAQUE_ERROR || resultado.jugador2 == ATAQUE_ERROR){
-			printf("\n El pokemon seleccionado debe existir y los ataques no se pueden repetir\n");
+			printf("\nEl pokemon seleccionado debe existir y los ataques no se pueden repetir\n");
 		}
 		else {
 			elejido = true;
 		}
 	}
 
-	mostrar_resultado(resultado);
+	mostrar_jugada(jugada_adversario, jugada_local, resultado);
 }
 
 void elejir_poke(juego_t * juego, adversario_t *adversario, struct menu *menu){

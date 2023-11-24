@@ -37,8 +37,8 @@ juego_t *juego_crear()
 	struct juego * nuevo_juego = calloc(1, sizeof(struct juego)); 
 	nuevo_juego->j1 = calloc(1, sizeof(struct jugador));
 	nuevo_juego->j2 = calloc(1, sizeof(struct jugador));
-	nuevo_juego->j1->usados = hash_crear(9);
-	nuevo_juego->j2->usados = hash_crear(9);
+	nuevo_juego->j1->usados = hash_crear(15);
+	nuevo_juego->j2->usados = hash_crear(15);
 	
 	if(!nuevo_juego || !nuevo_juego->j1 || !nuevo_juego->j2 || !nuevo_juego->j1->usados || !nuevo_juego->j2->usados){
 		free(nuevo_juego);
