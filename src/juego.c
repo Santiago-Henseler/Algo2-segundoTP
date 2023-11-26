@@ -17,7 +17,8 @@ juego_t *juego_crear()
 
 	if(!nuevo_juego || !nuevo_juego->j1 || !nuevo_juego->j2){
 		free(nuevo_juego);
-
+		jugador_destruir(nuevo_juego->j1);
+		jugador_destruir(nuevo_juego->j2);
 		return NULL;
 	}
 		
@@ -115,9 +116,11 @@ resultado_jugada_t juego_jugar_turno(juego_t *juego, jugada_t jugada_jugador1, j
 
 	juego->rondas++;
 
-	abb_quitar(juego->j1->movimientos_posibles,(void*)clave1);
-	abb_quitar(juego->j2->movimientos_posibles,(void*)clave2);
+	void * anterior1 = abb_quitar(juego->j1->movimientos_posibles,(void*)clave1);
+	void * anterior2 = abb_quitar(juego->j2->movimientos_posibles,(void*)clave2);
 
+	free(anterior1);
+	free(anterior2);
 	free(clave1);
 	free(clave2);
 
@@ -147,11 +150,9 @@ void juego_destruir(juego_t *juego)
 	if(!juego)
 		return;
 		
-	abb_destruir(juego->j1->movimientos_posibles);
-	free(juego->j1);
+	jugador_destruir(juego->j1);
 
-	abb_destruir(juego->j2->movimientos_posibles);
-	free(juego->j2);
+	jugador_destruir(juego->j2);
 
 	lista_destruir(juego->lista_poke);
 

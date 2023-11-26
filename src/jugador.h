@@ -18,4 +18,6 @@ jugador_t *jugador_crear();
 
 bool jugador_cargar_pokes(jugador_t * jugador, char *nombre, lista_t * lista);
 
+void jugador_destruir(jugador_t *jugador);
+
 #endif

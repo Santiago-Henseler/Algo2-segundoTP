@@ -23,13 +23,16 @@ void buscar_ataques(const struct ataque * _ataque, void *_almacenador){
 	
 	almacenador->elemento[almacenador->cantidad] = calloc(1, sizeof(char)*strlen(nombre)+1);
 
+	if(!almacenador->elemento[almacenador->cantidad])
+		return;
+
 	strcpy(almacenador->elemento[almacenador->cantidad], nombre);
 	almacenador->cantidad++;
 }
 
 almacenador_t * almacenar_ataques(char * nombre, lista_t *lista){
 	almacenador_t *almacenador = calloc(1, sizeof(almacenador_t));
-	almacenador->elemento = calloc(3,sizeof(char));
+	almacenador->elemento = calloc(3,sizeof(char*));
 
 	if(!almacenador || !almacenador->elemento)
 		return NULL;
@@ -50,7 +53,7 @@ void agregar_pokemon_a_lista(pokemon_t * _pokemon, void * _lista){
 
 char * crear_clave(jugada_t jugada){
 
-	char * clave = calloc(1, sizeof(char)*(strlen(jugada.pokemon) + strlen(jugada.ataque) +1 ) );
+	char * clave = calloc(1, sizeof(char)*(strlen(jugada.pokemon) + strlen(jugada.ataque) +2 ) );
 
 	strcpy(clave, jugada.pokemon);
 	strcat(clave, ",");

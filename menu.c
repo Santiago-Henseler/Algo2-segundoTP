@@ -20,6 +20,7 @@ void mostrar_ataques(char *nombre,  lista_t* lista){
 	free(ataques->elemento[1]);
 	free(ataques->elemento[2]);
 	free(ataques->elemento);
+	free(ataques);
 }
 
 bool mostrar_pokes(void * _poke, void * aux){
@@ -127,7 +128,7 @@ void mostrar_jugada(jugada_t adversario, jugada_t jugador, resultado_jugada_t re
 	printf("║                                         ║\n");
 	printf("║   Usaste:  %s con %s                    ║\n", jugador.pokemon, jugador.ataque);
 	printf("║                                         ║\n");
-	printf("║    	     Y resulto  %s                ║\n", rta(resultado.jugador1));
+	printf("║    	 Y resulto  %s                    ║\n", rta(resultado.jugador1));
 	printf("║                                         ║\n");
 	printf("║                                         ║\n"
 		   "╚═══════════════════◓═════════════════════╝\n\n");
@@ -179,7 +180,7 @@ void elejir_poke(juego_t * juego, adversario_t *adversario, struct menu *menu){
 	printf("Indicando los nombres de esta manera: 'nombre1,nombre2,nombre3'\n");
 	printf("\n");
 
-	char linea[200];
+	char linea[300];
 	bool elejido = false;
 
 	char *elejido1, *elejido2, *elejido3;
@@ -210,19 +211,15 @@ void elejir_poke(juego_t * juego, adversario_t *adversario, struct menu *menu){
 
 	char *nombre1, *nombre2, *nombre3;
 
-	if(!adversario_seleccionar_pokemon(adversario, &nombre1, &nombre2, &nombre3)){
+	if(!adversario_seleccionar_pokemon(adversario, &nombre1, &nombre2, &nombre3) || juego_seleccionar_pokemon(juego, JUGADOR2, nombre1, nombre2, nombre3) == ERROR_GENERAL || !adversario_pokemon_seleccionado(adversario, nombre1, nombre2, elejido3)){
         system("clear");
 		printf("Error al cargar pokemones, intentelo nuevamente!\n");
 		return;
     }
 
-    juego_seleccionar_pokemon(juego, JUGADOR2, nombre1, nombre2, nombre3);
-
 	menu->pokemones[0] = calloc(1, sizeof(char)*strlen(elejido1)+1);
 	menu->pokemones[1] = calloc(1, sizeof(char)*strlen(elejido2)+1);
 	menu->pokemones[2] = calloc(1, sizeof(char)*strlen(nombre3)+1);
-
-    adversario_pokemon_seleccionado(adversario, nombre1, nombre2, elejido3);
 
 	strcpy(menu->pokemones[0], elejido1);
 	strcpy(menu->pokemones[1], elejido2);

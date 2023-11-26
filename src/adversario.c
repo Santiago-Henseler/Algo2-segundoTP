@@ -40,7 +40,7 @@ bool adversario_seleccionar_pokemon(adversario_t *adversario, char **nombre1, ch
 	size_t tamanio = lista_tamanio(adversario->lista_poke);
 
 	pokemon_t *poke1 = lista_elemento_en_posicion(adversario->lista_poke, (size_t) rand() % tamanio);
-	pokemon_t *poke2 = lista_elemento_en_posicion(adversario->lista_poke, (size_t)  rand() % tamanio);
+	pokemon_t *poke2 = lista_elemento_en_posicion(adversario->lista_poke, (size_t) rand() % tamanio);
 	pokemon_t *poke3 = lista_elemento_en_posicion(adversario->lista_poke, (size_t) rand() % tamanio);
 
 	if(!poke1 || !poke2 || !poke3)
@@ -81,7 +81,7 @@ jugada_t adversario_proxima_jugada(adversario_t *adversario)
 	jugada_t j;	
 	srand((unsigned)time(&t+2));
 
-	int cantidad = (int)abb_tamanio(adversario->jugador->movimientos_posibles)-1;
+	int cantidad = (int)abb_tamanio(adversario->jugador->movimientos_posibles);
 
 	char *claves[cantidad];
 
@@ -92,10 +92,11 @@ jugada_t adversario_proxima_jugada(adversario_t *adversario)
 	char * nombre = strtok(clave, ",");
 	char * ataque = strtok(NULL, ",");
 
-	strcpy(j.pokemon , nombre);
+	strcpy(j.pokemon, nombre);
 	strcpy(j.ataque, ataque);
 
-	abb_quitar(adversario->jugador->movimientos_posibles, (void*)clave);
+	void * anterior = abb_quitar(adversario->jugador->movimientos_posibles, (void*)clave);
+	free(anterior);
 
 	return j;
 }
@@ -107,12 +108,6 @@ void adversario_informar_jugada(adversario_t *a, jugada_t j)
 
 void adversario_destruir(adversario_t *adversario)
 {
-	abb_destruir(adversario->jugador->movimientos_posibles);
-	lista_destruir_todo(adversario->lista_poke, free);
-
-	free(adversario->jugador->pokemones[0]);
-	free(adversario->jugador->pokemones[1]);
-	free(adversario->jugador->pokemones[2]);
-
+	jugador_destruir(adversario->jugador);
 	free(adversario);
 }

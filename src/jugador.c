@@ -11,7 +11,6 @@ jugador_t *jugador_crear(){
         return NULL;
     }
         
-
     return nuevo_jugador;
 }
 
@@ -51,4 +50,13 @@ bool jugador_cargar_pokes(jugador_t * jugador, char *nombre, lista_t * lista){
 	free(almacenador.elemento);
 	
 	return true;
+}
+
+void jugador_destruir(jugador_t *jugador){
+	
+	for(int i = 0; i < jugador->cant_pokes; i++)
+		free(jugador->pokemones[i]);
+
+	abb_destruir_todo(jugador->movimientos_posibles, free);
+	free(jugador);
 }
