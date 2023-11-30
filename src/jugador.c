@@ -40,8 +40,8 @@ bool jugador_cargar_pokes(jugador_t * jugador, char *nombre, lista_t * lista){
 
 	for(int i = 0; i < 3; i++){
 		strcpy(j.ataque, almacenador.elemento[i]);
-		char * clave = crear_clave(j);
-		abb_insertar(jugador->movimientos_posibles, (void*)clave);
+		char * jugada_valida = crear_clave(j);
+		abb_insertar(jugador->movimientos_posibles, (void*)jugada_valida);
 	}
 
 	free(almacenador.elemento[0]);

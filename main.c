@@ -18,14 +18,14 @@ bool cargar_archivo(juego_t *juego, char *PATH){
 int main(int argc, char *argv[])
 {
 	
-	//if(argc != 2){
-	//	printf("Error, no se especifico el archivo! Por favor ingrese: ./main 'nombre_archivo'\n");
-//		return -1;
-//	}
+	if(argc != 2){
+		printf("Error, no se especifico el archivo! Por favor ingrese: ./main 'nombre_archivo'\n");
+		return -1;
+	}
 
 	juego_t *juego = juego_crear();
 
-	if(!cargar_archivo(juego, "ejemplos/correcto.txt"))
+	if(!cargar_archivo(juego, argv[1]))
 		return -1;
 
 	lista_t * lista = juego_listar_pokemon(juego);
@@ -36,13 +36,13 @@ int main(int argc, char *argv[])
 	
 	if(!adversario || !menu || !lista){
 		printf("Error al iniciar el juego, intente nuevamente!");
-		return false;
+		return -1;
 	}
 
 	mostrar_comandos();
 
 	char comando = ' ';
-	while (!juego_finalizado(juego))
+	while (juego_finalizado(juego))
 	{
 
 		printf("Insertar comando: ");
@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
 
 	system("clear");
 	mostrar_puntaje(juego);
+
 	destruir_menu(menu);
 	juego_destruir(juego);
 	adversario_destruir(adversario);

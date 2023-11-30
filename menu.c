@@ -135,7 +135,7 @@ void mostrar_jugada(jugada_t adversario, jugada_t jugador, resultado_jugada_t re
 
 }
 
-void ataque(juego_t * juego, adversario_t *adversario, struct menu *menu){
+void realizar_ataque(juego_t * juego, adversario_t *adversario, struct menu *menu){
 	jugada_t jugada_adversario = adversario_proxima_jugada(adversario);
 
 	bool elejido = false;
@@ -262,7 +262,7 @@ void comander(char comando, juego_t * juego, adversario_t *adversario, struct me
 			printf("No seleccionaste tus pokemones todavia!\n");
 		}
 		else
-			ataque(juego, adversario, menu);
+			realizar_ataque(juego, adversario, menu);
 	}
 	else if(comando == PUNTAJE)
 		mostrar_puntaje(juego);

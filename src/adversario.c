@@ -83,20 +83,20 @@ jugada_t adversario_proxima_jugada(adversario_t *adversario)
 
 	int cantidad = (int)abb_tamanio(adversario->jugador->movimientos_posibles);
 
-	char *claves[cantidad];
+	char *jugadas_validas[cantidad];
 
-	abb_recorrer(adversario->jugador->movimientos_posibles, INORDEN, (void **)claves, (size_t)cantidad);
+	abb_recorrer(adversario->jugador->movimientos_posibles, INORDEN, (void **)jugadas_validas, (size_t)cantidad);
 
-	char * clave = claves[rand() % cantidad];
+	char * jugada = jugadas_validas[rand() % cantidad];
 
-	char * nombre = strtok(clave, ",");
+	char * nombre = strtok(jugada, ",");
 	char * ataque = strtok(NULL, ",");
 
 	strcpy(j.pokemon, nombre);
 	strcpy(j.ataque, ataque);
 
-	void * anterior = abb_quitar(adversario->jugador->movimientos_posibles, (void*)clave);
-	free(anterior);
+	void * jugada_anterior = abb_quitar(adversario->jugador->movimientos_posibles, (void*)jugada);
+	free(jugada_anterior);
 
 	return j;
 }
