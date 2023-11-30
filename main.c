@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	mostrar_comandos();
 
 	char comando = ' ';
-	while (juego_finalizado(juego))
+	while (!juego_finalizado(juego))
 	{
 
 		printf("Insertar comando: ");
