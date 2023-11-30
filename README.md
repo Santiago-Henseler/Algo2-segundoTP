@@ -113,4 +113,8 @@ Una vez inicializado la jugada del adversario, el jugador va a cargar por consol
 ```
 Contando todas las instrucciones se llega a la siguiente ecuación: `T(n) = 4*o(n)+ 2*o(log(n)) + 4*o(1)` . Entonces los algoritmos `juego_jugar_turno()` tiene una complejidad de O(n).
 
-Si los pokemones y ataques elegidos son correctos se muestra por pantalla el resultado del ataque con la funcion `mostrar_jugada()`
+Si los pokemones y ataques elegidos son correctos se muestra por pantalla el resultado del ataque con la funcion `mostrar_jugada()`.
+
+- Fin del juego: el juego se mantiene en bucle hasta que se hagan los 9 ataques posibles, una vez termina el bucle el juego muestra por pantalla los puntos obtenidos por cada jugador. Luego llama a las funciones destructoras `destruir_menu()` `juego_destruir()` `adversario_destruir()` que se encargan de vaciar la memoria almacenadad por estas estructuras.
+	
+	
