@@ -37,10 +37,9 @@ Una vez iniciado el juego y pasado un archivo valido por parametro, se abre un m
 
 - (e) Elejir pokemones: con este comando te da la opción de elegir los pokemones cargados en el archivo.
     
-    Una vez indicado por consola los pokemones que queres elegir el juego llama a la función `juego_seleccionar_pokemon` la cual primero valida que los pokemones existan y no sean repetidos, una vez cumpla las validaciones invoca la función `jugador_cargar_pokes` la cual se encarga de almacenar los pokemones y las jugadas validas a cada jugador.
+    Una vez indicado por consola los pokemones que queres elegir el juego llama a la función `juego_seleccionar_pokemon()` la cual primero valida que los pokemones existan y no sean repetidos, una vez cumpla las validaciones invoca la función `jugador_cargar_pokes()` la cual se encarga de almacenar los pokemones y las jugadas validas a cada jugador.
 
-
-Implemente la estructura jugador donde almaceno un hash 
+Implemente la estructura pública `jugador_t` donde almacenó el puntaje, los Pokemones elegidos y los movimientos posibles en un abb. Cómo en el juego se repite varias veces esta estructura y la operación de cargar Pokemones lo modularize en el archivo `jugador.h`.
 
 ```c
     // busca el puntero al pokemon elejido
@@ -53,13 +52,9 @@ Implemente la estructura jugador donde almaceno un hash
 		abb_insertar(jugador->movimientos_posibles, (void*)jugada_valida); --> o(1)
 ```
 
-Haciendo el analisis de complejidad y contando todas las instrucciones se llega a la siguiente ecuación: `T(n) = o(n) + o(n) + 3*o(1)` . Entonces los algoritmos  `juego_seleccionar_pokemon` y `jugador_cargar_pokes` tienen una complejidad de O(n) porque: 2n + 3 < N , ∀ N > 100.
+Haciendo el analisis de complejidad y contando todas las instrucciones se llega a la siguiente ecuación: `T(n) = o(n) + o(n) + 3*o(1)` . Entonces los algoritmos `jugador_cargar_pokes()` tiene una complejidad de O(n).
 
-Para poder almacenar los Pokemones implemente la estructura almacenador_t la cual utilizo para 
-
-
-
-
+Para poder almacenar los ataques de los pokémones implemente la estructura pública `almacenador_t`. Donde con ayuda de la función `almacenar_ataques()` y con el tp1 obtengo todos los ataques de un pokémon y los guardo en el almacenador.
 
 
 - (a) Realizar ataque: usando este comando te da la opción de realizar un ataque eligiendo entre tus pokemones
