@@ -39,6 +39,9 @@ Una vez iniciado el juego y pasado un archivo valido por parametro, se abre un m
     
     Una vez indicado por consola los pokemones que queres elegir el juego llama a la función `juego_seleccionar_pokemon` la cual primero valida que los pokemones existan y no sean repetidos, una vez cumpla las validaciones invoca la función `jugador_cargar_pokes` la cual se encarga de almacenar los pokemones y las jugadas validas a cada jugador.
 
+
+Implemente la estructura jugador donde almaceno un hash 
+
 ```c
     // busca el puntero al pokemon elejido
     pokemon_t *poke = lista_buscar_elemento(lista, comparador_poke,(void*) nombre); --> 0(n)
@@ -52,18 +55,25 @@ Una vez iniciado el juego y pasado un archivo valido por parametro, se abre un m
 
 Haciendo el analisis de complejidad y contando todas las instrucciones se llega a la siguiente ecuación: `T(n) = o(n) + o(n) + 3*o(1)` . Entonces los algoritmos  `juego_seleccionar_pokemon` y `jugador_cargar_pokes` tienen una complejidad de O(n) porque: 2n + 3 < N , ∀ N > 100.
 
+Para poder almacenar los Pokemones implemente la estructura almacenador_t la cual utilizo para 
+
+
+
+
+
+
 - (a) Realizar ataque: usando este comando te da la opción de realizar un ataque eligiendo entre tus pokemones
 
     Primero inicializa la jugada del adversario con la funcón `adversario_proxima_jugada` la cual recorre el arbol donde esta almacenadas las jugadas posibles, seleccionando una aleatoreamente y luego quitandola del abb.  
 
 ```c
-    // Guarda todas las jugadas validas en la variable claves
+    // Guarda todas las jugadas validas en la variable jugadas_validas
 	abb_recorrer(adversario->jugador->movimientos_posibles, INORDEN, (void **)jugadas_validas, (size_t)cantidad); --> o(n)
 
     // Selecciona una jugada aleatoreamente
 	char * jugada = jugadas_validas[rand() % cantidad]; --> o(1)
 
-    // Borra 
+    // Saca la jugada elegida del abb
 	void * jugada_anterior = abb_quitar(adversario->jugador->movimientos_posibles, (void*)jugada); --> o(log(n))
 ```
 Analizando la complejidad de `adversario_proxima_jugada` se llega a la siguiente ecuación: `T(n) = o(n) + o(log(n)) + o(1)`. Entonces concluimos que la complejidad es O(n).
