@@ -221,15 +221,19 @@ void elejir_poke(juego_t * juego, adversario_t *adversario, struct menu *menu){
 	menu->pokemones[1] = calloc(1, sizeof(char)*strlen(elejido2)+1);
 	menu->pokemones[2] = calloc(1, sizeof(char)*strlen(nombre3)+1);
 
-	strcpy(menu->pokemones[0], elejido1);
-	strcpy(menu->pokemones[1], elejido2);
-	strcpy(menu->pokemones[2], nombre3);
-
 	if(!menu->pokemones[2] || !menu->pokemones[1] || !menu->pokemones[0]){
 		system("clear");
 		printf("Error al cargar pokemones, intentelo nuevamente!\n");
 		return;
 	}
+
+	strcpy(menu->pokemones[0], elejido1);
+	strcpy(menu->pokemones[1], elejido2);
+	strcpy(menu->pokemones[2], nombre3);
+
+	free(nombre1);
+	free(nombre2);
+	free(nombre3);
 
     menu->elejidos = true;
  

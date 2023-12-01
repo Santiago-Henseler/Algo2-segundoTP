@@ -78,7 +78,7 @@ bool adversario_pokemon_seleccionado(adversario_t *adversario, char *nombre1, ch
 jugada_t adversario_proxima_jugada(adversario_t *adversario)
 {
 	time_t t;
-	jugada_t j;	
+	jugada_t j = {.ataque = "", .pokemon = ""};	
 	srand((unsigned)time(&t+2));
 
 	int cantidad = (int)abb_tamanio(adversario->jugador->movimientos_posibles);
@@ -92,8 +92,8 @@ jugada_t adversario_proxima_jugada(adversario_t *adversario)
 	char * nombre = strtok(jugada, ",");
 	char * ataque = strtok(NULL, ",");
 
-	strcpy(j.pokemon, nombre);
 	strcpy(j.ataque, ataque);
+	strcpy(j.pokemon, nombre);
 
 	void * jugada_anterior = abb_quitar(adversario->jugador->movimientos_posibles, (void*)jugada);
 	free(jugada_anterior);

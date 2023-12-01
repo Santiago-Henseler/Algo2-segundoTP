@@ -47,7 +47,7 @@ almacenador_t * almacenar_ataques(char * nombre, lista_t *lista){
 void agregar_pokemon_a_lista(pokemon_t * _pokemon, void * _lista){
 	lista_t *lista = _lista;
 
-	 lista_insertar(lista, _pokemon);
+	lista_insertar(lista, _pokemon);
 	return;
 }
 
