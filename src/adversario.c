@@ -88,9 +88,15 @@ jugada_t adversario_proxima_jugada(adversario_t *adversario)
 	abb_recorrer(adversario->jugador->movimientos_posibles, INORDEN, (void **)jugadas_validas, (size_t)cantidad);
 
 	char * jugada = jugadas_validas[rand() % cantidad];
-
+	
 	char * nombre = strtok(jugada, ",");
 	char * ataque = strtok(NULL, ",");
+
+	if(!ataque){
+		void * jugada_rota = abb_quitar(adversario->jugador->movimientos_posibles, (void*)jugada);
+		free(jugada_rota);
+		return adversario_proxima_jugada(adversario);
+	}
 
 	strcpy(j.ataque, ataque);
 	strcpy(j.pokemon, nombre);

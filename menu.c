@@ -287,7 +287,6 @@ menu_t * menu_crear(lista_t * lista){
 }
 
 void destruir_menu(menu_t *menu){
-	lista_destruir(menu->lista);
 	free(menu->pokemones[0]);
 	free(menu->pokemones[1]);
 	free(menu->pokemones[2]);

@@ -118,6 +118,9 @@ resultado_jugada_t juego_jugar_turno(juego_t *juego, jugada_t jugada_jugador1, j
 	resultado.jugador1 = clasificar_ataque(poke1_ataque->tipo, poke2_ataque->tipo);
 	resultado.jugador2 = clasificar_ataque(poke2_ataque->tipo, poke1_ataque->tipo);
 
+	if(resultado.jugador1 == ATAQUE_ERROR || resultado.jugador2 == ATAQUE_ERROR)
+		return resultado;
+
 	juego->j1->puntaje += puntear_ataque(resultado.jugador1, poke1_ataque);
 	juego->j2->puntaje += puntear_ataque(resultado.jugador2, poke2_ataque);
 
@@ -146,7 +149,7 @@ int juego_obtener_puntaje(juego_t *juego, JUGADOR jugador)
 
 bool juego_finalizado(juego_t *juego)
 {
-	if(juego->rondas == 9 || !juego)
+	if(juego->rondas == 1 || !juego)
 		return true;
 
 	return false;
@@ -161,9 +164,9 @@ void juego_destruir(juego_t *juego)
 
 	jugador_destruir(juego->j2);
 
-	lista_destruir(juego->lista_poke);
-
 	pokemon_destruir_todo(juego->ip);
+
+	lista_destruir(juego->lista_poke);
 
 	free(juego);
 }
