@@ -75,7 +75,7 @@ Por ultimo se invoca a `adversario_pokemon_seleccionado()` la cual notifica al a
 
 - (a) Realizar ataque: usando este comando te da la opción de realizar un ataque eligiendo entre tus pokemones
 
-    Primero inicializa la jugada del adversario con la funcón `adversario_proxima_jugada` la cual recorre el arbol donde esta almacenadas las jugadas posibles, seleccionando una aleatoreamente y luego quitandola del abb.  
+    Primero inicializa la jugada del adversario con la funcón `adversario_proxima_jugada()` la cual recorre el arbol donde esta almacenadas las jugadas posibles, seleccionando una aleatoreamente y luego quitandola del abb.  
 
 ```c
     // Guarda todas las jugadas validas en la variable jugadas_validas
@@ -116,5 +116,15 @@ Contando todas las instrucciones se llega a la siguiente ecuación: `T(n) = 4*o(
 Si los pokemones y ataques elegidos son correctos se muestra por pantalla el resultado del ataque con la funcion `mostrar_jugada()`.
 
 - Fin del juego: el juego se mantiene en bucle hasta que se hagan los 9 ataques posibles, una vez termina el bucle el juego muestra por pantalla los puntos obtenidos por cada jugador. Luego llama a las funciones destructoras `destruir_menu()` `juego_destruir()` `adversario_destruir()` que se encargan de vaciar la memoria almacenadad por estas estructuras.
-	
-	
+
+
+- Solución de error: El juego rompia algunas veces cuando el adversario queria cargar una nueva jugada en la funcion `adversario_proxima_jugada()`. El problema radicaba en el strtok y su funcionamiento. Al separar el nombre del pokemon lo almacenaba tambien en la variabe jugada, entonces cuando se queria borrar en el abb esa jugada el abb no la encontraba. Para solucionarlo, hice que si pasara esto el abb busque la jugada que estaba mal almacenada y la borre. Al implementar las siguiente lineas a mi codigo dejo de existir este problema.
+
+
+```c
+	if(!ataque){ // si no se borro bien el ataque su clave va a ser NULL entonces hay que borrarla
+		void * jugada_rota = abb_quitar(adversario->jugador->movimientos_posibles, (void*)jugada); // busca la jugada mal borrada y la saca
+		free(jugada_rota);  // libera la memoria de la jugada borrada
+		return adversario_proxima_jugada(adversario); // vuelve a llamar a la funcion
+	}
+```
