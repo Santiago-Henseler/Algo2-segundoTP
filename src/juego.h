@@ -1,6 +1,5 @@
 #ifndef JUEGO_H_
 #define JUEGO_H_
-
 #include "lista.h"
 #include <stdbool.h>
 

@@ -1,7 +1,6 @@
 #ifndef ADVERSARIO_H_
 #define ADVERSARIO_H_
 
-#include "lista.h"
 #include "juego.h"
 
 typedef struct adversario adversario_t;
